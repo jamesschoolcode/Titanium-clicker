@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Titanium Clicker</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 20%, #23244a 60%, #19182c 100%);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 420px;
+      margin: 60px auto;
+      padding: 30px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #22243E 70%, #3F51B5 100%);
+      color: #fafbfc;
+      box-shadow: 0 8px 32px rgba(60,80,200,0.18);
+    }
+    h2 {
+      text-align: center;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+    .stats {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 1.1em;
+      font-weight: 500;
+    }
+    .cash {
+      margin-bottom: 12px;
+      font-size: 1.4em;
+      font-weight: 700;
+      text-align: center;
+    }
+    .cash span {
+      color: #FFD700;
+    }
+    .click-btn {
+      display: block;
+      margin: 0 auto 28px auto;
+      padding: 28px 70px;
+      font-size: 1.6rem;
+      font-weight: 600;
+      border-radius: 64px;
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 24px #8E2DE280;
+      transition: box-shadow 0.2s, transform 0.1s, background 0.3s;
+      cursor: pointer;
+      background: linear-gradient(90deg, #8E2DE2 0%, #4A00E0 100%);
+    }
+    .click-btn:active {
+      box-shadow: 0 2px 10px #4A00E0AA;
+      transform: scale(0.97);
+    }
+    /* Skins */
+    .skin-default {
+      background: linear-gradient(90deg, #8E2DE2 0%, #4A00E0 100%);
+      color: #fff;
+    }
+    .skin-gold {
+      background: linear-gradient(90deg, #FFD700 0%, #FFB300 100%);
+      color: #23244A;
+    }
+    .skin-carbon {
+      background: linear-gradient(135deg, #232b2b 60%, #485563 100%);
+      color: #f3f3f3;
+      border: 2px solid #191919;
+      text-shadow: 1px 1px 2px #0009;
+    }
+    .skin-red {
+      background: linear-gradient(90deg, #ff5858 0%, #f857a6 100%);
+      color: #fff;
+    }
+    .skin-green {
+      background: linear-gradient(90deg, #56ab2f 0%, #a8e063 100%);
+      color: #222;
+    }
+    .skin-cyber {
+      background: linear-gradient(90deg, #00F2FE 0%, #4FACFE 100%);
+      color: #222;
+      text-shadow: 0 0 6px #00eaffb3;
+      border: 2px solid #00eaff77;
+    }
+    .skin-pink {
+      background: linear-gradient(90deg, #ffafcc 0%, #a2d2ff 100%);
+      color: #7c2a6a;
+    }
+    .skin-mystic {
+      background: linear-gradient(110deg, #5f2c82 0%, #49a09d 100%);
+      color: #fff;
+      text-shadow: 0 0 8px #0005;
+    }
+    .autoclicker-info {
+      background: #22243E;
+      border-radius: 8px;
+      padding: 14px 17px;
+      margin-top: 24px;
+      margin-bottom: 12px;
+      text-align: center;
+      font-size: 1.1em;
+      box-shadow: 0 2px 8px #22243e44;
+    }
+    .upgrades {
+      margin-top: 36px;
+    }
+    .upgrade-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .upgrade {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #23244A;
+      border-radius: 8px;
+      padding: 12px 17px;
+      margin-bottom: 14px;
+      opacity: 1;
+      transition: opacity 0.4s;
+    }
+    .upgrade.locked {
+      opacity: 0.4;
+      filter: grayscale(0.8);
+      pointer-events: none;
+    }
+    .upgrade-info {
+      flex: 1;
+    }
+    .upgrade-title {
+      font-weight: 600;
+      font-size: 1.07em;
+    }
+    .upgrade-details {
+      font-size: 0.99em;
+      opacity: 0.7;
+    }
+    .upgrade-btn {
+      background: linear-gradient(90deg, #FFD700 0%, #FFB300 100%);
+      color: #23244A;
+      font-weight: 700;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: 22px;
+    }
+    .upgrade-btn:disabled {
+      background: linear-gradient(90deg, #555 0%, #333 100%);
+      color: #bbb;
+      cursor: not-allowed;
+    }
+    .level-bar-container {
+      background: #11142a;
+      border-radius: 6px;
+      height: 18px;
+      margin: 0 0 16px 0;
+      overflow: hidden;
+      box-shadow: 0 1px 6px #0002;
+    }
+    .level-bar {
+      background: linear-gradient(90deg,#FFD700 0%,#4A00E0 100%);
+      height: 100%;
+      transition: width 0.6s cubic-bezier(.45,.32,.38,.88);
+    }
+    .stocks-section {
+      background: #23244A;
+      border-radius: 10px;
+      margin-top: 34px;
+      margin-bottom: 10px;
+      padding: 18px 12px 10px 12px;
+      box-shadow: 0 2px 8px #23244a60;
+    }
+    .stocks-section h4 {
+      margin: 0 0 8px 0;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      font-size: 1.13em;
+    }
+    .stock-list { list-style: none; padding: 0; margin: 0; }
+    .stock-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid #22264a;
+      font-size: 1em;
+    }
+    .stock-row:last-child { border-bottom: none; }
+    .stock-col {
+      flex: 1;
+      text-align: center;
+    }
+    .stock-col:first-child { text-align: left; }
+    .stock-col:last-child { text-align: right; }
+    .stock-btn {
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-weight: 700;
+      font-size: 0.98em;
+      margin-left: 8px;
+      border: none;
+      color: #fff;
+      background: linear-gradient(90deg, #8E2DE2 0%, #4A00E0 100%);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .stock-btn.sell {
+      background: linear-gradient(90deg, #FFD700 0%, #FFB300 100%);
+      color: #23244A;
+    }
+    .stock-btn:disabled {
+      background: #333;
+      color: #bbb;
+      cursor: not-allowed;
+    }
+    .your-stock {
+      font-size: 0.98em;
+      color: #FFD700;
+      margin-left: 12px;
+    }
+    .save-section {
+      margin: 22px 0 0 0;
+      text-align: center;
+    }
+    .save-btn, .load-btn, .reset-btn {
+      border-radius: 8px;
+      border: none;
+      font-size: 1em;
+      font-weight: 700;
+      margin: 0 6px;
+      padding: 8px 22px;
+      cursor: pointer;
+      transition: background 0.2s;
+      color: #23244A;
+    }
+    .save-btn { background: linear-gradient(90deg, #FFD700 0%, #FFB300 100%);}
+    .load-btn { background: linear-gradient(90deg, #8E2DE2 0%, #4A00E0 100%); color: #fff;}
+    .reset-btn { background: #cf3f3f; color: #fff;}
+    .music-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      gap: 10px;
+      font-size: 1em;
+      opacity: 0.85;
+    }
+    .music-btn {
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 1em;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(90deg, #FFD700 0%, #FFB300 100%);
+      color: #23244A;
+      transition: background 0.2s;
+    }
+    .skins-section {
+      text-align: center;
+      margin-bottom: 18px;
+      margin-top: 8px;
+    }
+    .skin-select {
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 600;
+      margin: 0 4px;
+      border: none;
+      background: #22243e;
+      color: #FFD700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .skin-select:focus {
+      outline: 2px solid #FFD700;
+    }
+    @media (max-width: 600px) {
+      .container { padding: 10px; }
+      .click-btn { padding: 18px 36px; font-size: 1.2rem; }
+      .stats { flex-direction: column; gap: 5px; }
+      .stock-row { flex-direction: column; gap: 2px; }
+      .stock-col { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Titanium Clicker</h2>
+    <div class="music-controls" id="musicControls">
+      <button class="music-btn" id="musicToggle">Play Music</button>
+      <span id="musicStatus" style="font-size:0.92em;"></span>
+    </div>
+    <audio id="bgMusic" src="https://cdn.pixabay.com/audio/2023/02/10/audio_12b133e1b3.mp3" loop></audio>
+    <div class="skins-section">
+      <label for="skinSelect" style="font-weight:600; color:#FFD700;">Button Skin:</label>
+      <select id="skinSelect" class="skin-select">
+        <option value="default">Default</option>
+        <option value="gold">Gold</option>
+        <option value="carbon">Carbon</option>
+        <option value="red">Red</option>
+        <option value="green">Green</option>
+        <option value="cyber">Cyber</option>
+        <option value="pink">Pink</option>
+        <option value="mystic">Mystic</option>
+      </select>
+    </div>
+    <div class="stats">
+      <span>Level: <span id="level">1</span></span>
+      <span>Clicks: <span id="totalClicks">0</span></span>
+    </div>
+    <div class="level-bar-container">
+      <div class="level-bar" id="levelBar" style="width:0%"></div>
+    </div>
+    <div class="cash">Cash: <span id="cash">$0</span></div>
+    <button class="click-btn skin-default" id="clickBtn">Click Titanium (+$<span id="cpc">1</span>)</button>
+    <audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa7b3b.mp3"></audio>
+    <div class="autoclicker-info" id="autoclickerInfo" style="display:none;"></div>
+    <div class="upgrades">
+      <h4 style="margin-bottom:10px;letter-spacing:0.5px;">Upgrades</h4>
+      <ul class="upgrade-list" id="upgradeList"></ul>
+    </div>
+    <div class="stocks-section">
+      <h4>Fake Stocks Market</h4>
+      <ul class="stock-list" id="stockList"></ul>
+    </div>
+    <div class="save-section">
+      <button class="save-btn" id="saveBtn">Save</button>
+      <button class="load-btn" id="loadBtn">Load</button>
+      <button class="reset-btn" id="resetBtn">Reset</button>
+      <div id="saveStatus" style="margin-top:6px;font-size:0.95em;opacity:0.8;"></div>
+    </div>
+  </div>
+  <script>
+    // Level system
+    let totalClicks = 0;
+    let level = 1;
+    const levelThresholds = [0, 10, 30, 100, 400, 1500, 5000, 15000, 50000, 200000, 1000000]; // thresholds for levels 1-11
+
+    // Game state
+    let cash = 0;
+    let cpc = 1;
+    let autoclickerOwned = 0;
+    let autoclickerCost = 10000;
+    let autoclickerCps = 1; // Each autoclicker gives 1 click per second
+    let autoclickerInterval = null;
+
+    // Skins
+    const skinMap = {
+      default: "skin-default",
+      gold: "skin-gold",
+      carbon: "skin-carbon",
+      red: "skin-red",
+      green: "skin-green",
+      cyber: "skin-cyber",
+      pink: "skin-pink",
+      mystic: "skin-mystic"
+    };
+    let buttonSkin = localStorage.getItem('titaniumClickerBtnSkin') || "default";
+
+    // Fake stocks system
+    const initialStocks = [
+      { name: "TITCO", price: 100, volatility: 0.03, owned: 0 },
+      { name: "MEGACORE", price: 250, volatility: 0.05, owned: 0 },
+      { name: "PIXELNET", price: 40, volatility: 0.1, owned: 0 },
+      { name: "CYBRIA", price: 500, volatility: 0.015, owned: 0 },
+      { name: "NEONIX", price: 200, volatility: 0.07, owned: 0 }
+    ];
+    let stocks = initialStocks.map(s => ({...s}));
+
+    // Upgrades with unlock levels
+    const upgrades = [
+      { name: "Aura Boost", cost: 50, cpcIncrease: 1, owned: 0, unlockLevel: 1 },
+      { name: "Radiant Touch", cost: 200, cpcIncrease: 5, owned: 0, unlockLevel: 1 },
+      { name: "Celestial Surge", cost: 1000, cpcIncrease: 25, owned: 0, unlockLevel: 2 },
+      { name: "Spirit Echo", cost: 5000, cpcIncrease: 75, owned: 0, unlockLevel: 3 },
+      { name: "Energized Halo", cost: 25000, cpcIncrease: 250, owned: 0, unlockLevel: 4 },
+      { name: "Infinite Pulse", cost: 125000, cpcIncrease: 1000, owned: 0, unlockLevel: 5 },
+      { name: "Quantum Spark", cost: 600000, cpcIncrease: 5000, owned: 0, unlockLevel: 6 },
+      { name: "Galactic Surge", cost: 3000000, cpcIncrease: 25000, owned: 0, unlockLevel: 7 },
+      { name: "Reality Tear", cost: 15000000, cpcIncrease: 100000, owned: 0, unlockLevel: 8 },
+      { name: "Singularity", cost: 75000000, cpcIncrease: 500000, owned: 0, unlockLevel: 9 }
+    ];
+
+    // DOM refs
+    const cashEl = document.getElementById('cash');
+    const cpcEl = document.getElementById('cpc');
+    const clickBtn = document.getElementById('clickBtn');
+    const skinSelect = document.getElementById('skinSelect');
+    const upgradeList = document.getElementById('upgradeList');
+    const autoclickerInfo = document.getElementById('autoclickerInfo');
+    const levelEl = document.getElementById('level');
+    const totalClicksEl = document.getElementById('totalClicks');
+    const levelBar = document.getElementById('levelBar');
+    const clickSound = document.getElementById('clickSound');
+    const stockList = document.getElementById('stockList');
+    const saveBtn = document.getElementById('saveBtn');
+    const loadBtn = document.getElementById('loadBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const saveStatus = document.getElementById('saveStatus');
+    const bgMusic = document.getElementById('bgMusic');
+    const musicToggle = document.getElementById('musicToggle');
+    const musicStatus = document.getElementById('musicStatus');
+    let musicPlaying = false;
+
+    function updateUI() {
+      cashEl.textContent = `$${cash}`;
+      cpcEl.textContent = cpc;
+      levelEl.textContent = level;
+      totalClicksEl.textContent = totalClicks;
+      renderLevelBar();
+      renderUpgrades();
+      renderAutoclicker();
+      renderStocks();
+      updateSkin();
+    }
+
+    function renderLevelBar() {
+      // Progress to next level
+      const current = totalClicks - levelThresholds[level - 1];
+      const needed = (levelThresholds[level] || (levelThresholds[level-1]+500000)) - levelThresholds[level - 1];
+      const percent = Math.min(100, Math.round((current / needed) * 100));
+      levelBar.style.width = percent + "%";
+    }
+
+    clickBtn.addEventListener('click', () => {
+      cash += cpc;
+      totalClicks += 1;
+      if(clickSound) {
+        // Reset if already playing for rapid clicks
+        clickSound.currentTime = 0;
+        clickSound.play();
+      }
+      checkLevelUp();
+      updateUI();
+      saveGame(); // Auto-save on click
+    });
+
+    function checkLevelUp() {
+      if (level < levelThresholds.length && totalClicks >= levelThresholds[level]) {
+        level += 1;
+        checkLevelUp(); // Recursively check in case of multiple level-ups
+      }
+    }
+
+    function renderUpgrades() {
+      upgradeList.innerHTML = '';
+      upgrades.forEach((upg, idx) => {
+        const unlocked = level >= upg.unlockLevel;
+        const li = document.createElement('li');
+        li.className = 'upgrade' + (unlocked ? '' : ' locked');
+
+        const infoDiv = document.createElement('div');
+        infoDiv.className = 'upgrade-info';
+        infoDiv.innerHTML = `<div class="upgrade-title">${upg.name}</div>
+          <div class="upgrade-details">
+            +${upg.cpcIncrease} per click | Owned: ${upg.owned}
+            ${!unlocked ? `<br><span style="color:#FFD700;">Unlocks at level ${upg.unlockLevel}</span>` : ''}
+          </div>`;
+
+        const btn = document.createElement('button');
+        btn.className = 'upgrade-btn';
+        btn.textContent = `Buy ($${upg.cost})`;
+        btn.disabled = !unlocked || cash < upg.cost;
+        btn.onclick = () => buyUpgrade(idx);
+
+        li.appendChild(infoDiv);
+        li.appendChild(btn);
+        upgradeList.appendChild(li);
+      });
+
+      // Render Auto Clicker as a special upgrade at the end (unlocked at level 3)
+      const autoUnlocked = level >= 3;
+      const autoLi = document.createElement('li');
+      autoLi.className = 'upgrade' + (autoUnlocked ? '' : ' locked');
+
+      const autoInfo = document.createElement('div');
+      autoInfo.className = 'upgrade-info';
+      autoInfo.innerHTML = `<div class="upgrade-title">Auto Clicker</div>
+        <div class="upgrade-details">
+          +${autoclickerCps} click/sec each | Owned: ${autoclickerOwned}
+          ${!autoUnlocked ? `<br><span style="color:#FFD700;">Unlocks at level 3</span>` : ''}
+        </div>`;
+
+      const autoBtn = document.createElement('button');
+      autoBtn.className = 'upgrade-btn';
+      autoBtn.textContent = `Buy ($${autoclickerCost})`;
+      autoBtn.disabled = !autoUnlocked || cash < autoclickerCost;
+      autoBtn.onclick = buyAutoClicker;
+
+      autoLi.appendChild(autoInfo);
+      autoLi.appendChild(autoBtn);
+      upgradeList.appendChild(autoLi);
+    }
+
+    function buyUpgrade(idx) {
+      const upg = upgrades[idx];
+      if (level >= upg.unlockLevel && cash >= upg.cost) {
+        cash -= upg.cost;
+        cpc += upg.cpcIncrease;
+        upg.owned += 1;
+        upg.cost = Math.round(upg.cost * 1.4);
+        updateUI();
+        saveGame();
+      }
+    }
+
+    function buyAutoClicker() {
+      if (level >= 3 && cash >= autoclickerCost) {
+        cash -= autoclickerCost;
+        autoclickerOwned += 1;
+        autoclickerCost = Math.round(autoclickerCost * 1.7);
+        startAutoClicker();
+        updateUI();
+        saveGame();
+      }
+    }
+
+    function renderAutoclicker() {
+      if (autoclickerOwned > 0) {
+        autoclickerInfo.style.display = '';
+        autoclickerInfo.textContent =
+          `Auto Clickers: ${autoclickerOwned} (+${autoclickerOwned * autoclickerCps} cash/sec)`;
+      } else {
+        autoclickerInfo.style.display = 'none';
+      }
+    }
+
+    function startAutoClicker() {
+      if (autoclickerInterval) clearInterval(autoclickerInterval);
+      if (autoclickerOwned > 0) {
+        autoclickerInterval = setInterval(() => {
+          cash += autoclickerOwned * autoclickerCps;
+          updateUI();
+          saveGame();
+        }, 1000);
+      }
+    }
+
+    // --- Fake stocks system ---
+    function renderStocks() {
+      stockList.innerHTML = '';
+      stocks.forEach((stock, idx) => {
+        const li = document.createElement('li');
+        li.className = 'stock-row';
+
+        // Stock name and your shares
+        const nameCol = document.createElement('div');
+        nameCol.className = 'stock-col';
+        nameCol.innerHTML = `<b>${stock.name}</b> <span class="your-stock">${stock.owned > 0 ? 'Your shares: ' + stock.owned : ''}</span>`;
+
+        // Price
+        const priceCol = document.createElement('div');
+        priceCol.className = 'stock-col';
+        priceCol.innerHTML = `$${stock.price}`;
+
+        // Buy/Sell
+        const actionCol = document.createElement('div');
+        actionCol.className = 'stock-col';
+        // Buy
+        const buyBtn = document.createElement('button');
+        buyBtn.className = 'stock-btn';
+        buyBtn.textContent = "Buy";
+        buyBtn.disabled = cash < stock.price;
+        buyBtn.onclick = () => buyStock(idx);
+        actionCol.appendChild(buyBtn);
+
+        // Sell
+        const sellBtn = document.createElement('button');
+        sellBtn.className = 'stock-btn sell';
+        sellBtn.textContent = "Sell";
+        sellBtn.disabled = stock.owned < 1;
+        sellBtn.onclick = () => sellStock(idx);
+        actionCol.appendChild(sellBtn);
+
+        li.appendChild(nameCol);
+        li.appendChild(priceCol);
+        li.appendChild(actionCol);
+        stockList.appendChild(li);
+      });
+    }
+
+    function buyStock(idx) {
+      const stock = stocks[idx];
+      if (cash >= stock.price) {
+        cash -= Math.round(stock.price);
+        stock.owned += 1;
+        updateUI();
+        saveGame();
+      }
+    }
+
+    function sellStock(idx) {
+      const stock = stocks[idx];
+      if (stock.owned > 0) {
+        cash += Math.round(stock.price);
+        stock.owned -= 1;
+        updateUI();
+        saveGame();
+      }
+    }
+
+    // Randomly update stock prices
+    function updateStockPrices() {
+      stocks.forEach(stock => {
+        // Simulate stock market random walk
+        const change = (Math.random() * 2 - 1) * stock.volatility * stock.price;
+        stock.price = Math.max(1, Math.round(stock.price + change));
+      });
+      renderStocks();
+      saveGame();
+    }
+    setInterval(updateStockPrices, 2000);
+
+    // --- Skins ---
+    function updateSkin() {
+      clickBtn.className = "click-btn " + (skinMap[buttonSkin] || "skin-default");
+      skinSelect.value = buttonSkin;
+    }
+    skinSelect.addEventListener("change", function() {
+      buttonSkin = skinSelect.value;
+      updateSkin();
+      localStorage.setItem('titaniumClickerBtnSkin', buttonSkin);
+    });
+
+    // --- Save/Load/Reset ---
+    function getSaveData() {
+      return {
+        cash,
+        cpc,
+        autoclickerOwned,
+        autoclickerCost,
+        totalClicks,
+        level,
+        upgrades: upgrades.map(u => ({...u})),
+        stocks: stocks.map(s => ({...s})),
+        buttonSkin
+      };
+    }
+
+    function saveGame(showStatus=true) {
+      try {
+        localStorage.setItem('titaniumClickerSave', JSON.stringify(getSaveData()));
+        if (showStatus) showSaveStatus('Game saved!');
+      } catch(e) {
+        showSaveStatus('Save failed!', true);
+      }
+    }
+
+    function loadGame(showStatus=true) {
+      try {
+        const data = JSON.parse(localStorage.getItem('titaniumClickerSave'));
+        if (data) {
+          cash = data.cash ?? 0;
+          cpc = data.cpc ?? 1;
+          autoclickerOwned = data.autoclickerOwned ?? 0;
+          autoclickerCost = data.autoclickerCost ?? 10000;
+          totalClicks = data.totalClicks ?? 0;
+          level = data.level ?? 1;
+          if (data.upgrades && Array.isArray(data.upgrades)) {
+            data.upgrades.forEach((u, i) => {
+              if (upgrades[i]) Object.assign(upgrades[i], u);
+            });
+          }
+          if (data.stocks && Array.isArray(data.stocks)) {
+            stocks = data.stocks.map(s => ({...s}));
+          }
+          if (data.buttonSkin && skinMap[data.buttonSkin]) {
+            buttonSkin = data.buttonSkin;
+          }
+          startAutoClicker();
+          updateUI();
+          if (showStatus) showSaveStatus('Game loaded!');
+        } else {
+          if (showStatus) showSaveStatus('No save found.', true);
+        }
+      } catch(e) {
+        if (showStatus) showSaveStatus('Failed to load save!', true);
+      }
+    }
+
+    function resetGame() {
+      if (!confirm("Are you sure you want to reset your game? This cannot be undone.")) return;
+      cash = 0;
+      cpc = 1;
+      autoclickerOwned = 0;
+      autoclickerCost = 10000;
+      totalClicks = 0;
+      level = 1;
+      upgrades.forEach((u, i) => {
+        u.owned = 0;
+        if (i === 0) u.cost = 50;
+        if (i === 1) u.cost = 200;
+        if (i === 2) u.cost = 1000;
+        if (i === 3) u.cost = 5000;
+        if (i === 4) u.cost = 25000;
+        if (i === 5) u.cost = 125000;
+        if (i === 6) u.cost = 600000;
+        if (i === 7) u.cost = 3000000;
+        if (i === 8) u.cost = 15000000;
+        if (i === 9) u.cost = 75000000;
+      });
+      stocks = initialStocks.map(s => ({...s}));
+      buttonSkin = "default";
+      localStorage.setItem('titaniumClickerBtnSkin', buttonSkin);
+      if (autoclickerInterval) clearInterval(autoclickerInterval);
+      updateUI();
+      saveGame(false);
+      showSaveStatus('Game reset!');
+    }
+
+    function showSaveStatus(msg, error=false) {
+      saveStatus.textContent = msg;
+      saveStatus.style.color = error ? '#cf3f3f' : '#FFD700';
+      setTimeout(() => { saveStatus.textContent = ""; }, 2200);
+    }
+
+    // Save/Load/Reset events
+    saveBtn.addEventListener('click', () => saveGame());
+    loadBtn.addEventListener('click', () => loadGame());
+    resetBtn.addEventListener('click', () => resetGame());
+
+    // --- Background Music Controls ---
+    function updateMusicBtn() {
+      musicToggle.textContent = musicPlaying ? 'Pause Music' : 'Play Music';
+      musicStatus.textContent = musicPlaying ? 'Music On 🎵' : 'Music Off';
+    }
+    function tryPlayMusic() {
+      if (!musicPlaying) {
+        bgMusic.volume = 0.4;
+        bgMusic.play().then(() => {
+          musicPlaying = true;
+          updateMusicBtn();
+        }).catch(() => {
+          musicPlaying = false;
+          updateMusicBtn();
+        });
+      }
+    }
+    musicToggle.addEventListener('click', function() {
+      if (musicPlaying) {
+        bgMusic.pause();
+        musicPlaying = false;
+      } else {
+        bgMusic.volume = 0.4;
+        bgMusic.play();
+        musicPlaying = true;
+      }
+      updateMusicBtn();
+    });
+    window.addEventListener('pointerdown', function once() {
+      tryPlayMusic();
+      window.removeEventListener('pointerdown', once);
+    });
+    bgMusic.addEventListener('ended', () => { musicPlaying = false; updateMusicBtn(); });
+
+    // Try auto-load on first open
+    window.addEventListener('DOMContentLoaded', () => {
+      loadGame(false);
+      startAutoClicker();
+      updateMusicBtn();
+      updateSkin();
+    });
+
+    // Initial render
+    updateUI();
+  </script>
+</body>
+</html>
