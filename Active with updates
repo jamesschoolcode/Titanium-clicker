@@ -137,6 +137,80 @@
       color: #fff;
       text-shadow: 0 0 8px #0005;
     }
+    .skin-preview {
+      padding: 6px 22px;
+      font-size: 1.1em;
+      border-radius: 50px;
+      border: none;
+      margin: 0 0 0 8px;
+      display: inline-block;
+      pointer-events: none;
+    }
+    .skin-shop-section {
+      margin: 20px 0 0 0;
+      background: #1a1934;
+      border-radius: 12px;
+      padding: 16px 12px 8px 12px;
+      box-shadow: 0 2px 8px #23244a77;
+    }
+    .skin-shop-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .skin-shop-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #23244a;
+      border-radius: 7px;
+      padding: 10px 12px;
+    }
+    .skin-shop-row .skin-shop-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 1.04em;
+      color: #FFD700;
+    }
+    .skin-buy-btn, .skin-use-btn {
+      padding: 7px 16px;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      margin-left: 12px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .skin-buy-btn {
+      background: linear-gradient(90deg, #FFD700 0%, #FFB300 100%);
+      color: #23244A;
+    }
+    .skin-buy-btn:disabled {
+      background: #444;
+      color: #999;
+      cursor: not-allowed;
+    }
+    .skin-use-btn {
+      background: linear-gradient(90deg, #8E2DE2 0%, #4A00E0 100%);
+      color: #fff;
+    }
+    .skin-use-btn:disabled {
+      background: #ccc;
+      color: #888;
+      cursor: not-allowed;
+    }
+    .skin-owned-label {
+      color: #FFD700;
+      font-size: 0.99em;
+      margin-left: 8px;
+      font-weight: 700;
+    }
     .autoclicker-info {
       background: #22243E;
       border-radius: 8px;
@@ -307,82 +381,13 @@
       color: #23244A;
       transition: background 0.2s;
     }
-    .skins-section {
-      text-align: center;
-      margin-bottom: 18px;
-      margin-top: 8px;
-    }
-    .skin-select {
-      padding: 7px 16px;
-      border-radius: 6px;
-      font-size: 1em;
-      font-weight: 600;
-      margin: 0 4px;
-      border: none;
-      background: #22243e;
-      color: #FFD700;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .skin-select:focus {
-      outline: 2px solid #FFD700;
-    }
-    /* Achievements */
-    .achievements-section {
-      background: #1a1934;
-      border-radius: 12px;
-      margin-top: 26px;
-      margin-bottom: 14px;
-      padding: 17px 10px 12px 14px;
-      box-shadow: 0 2px 8px #23244a77;
-    }
-    .achievements-section h4 {
-      margin: 0 0 9px 0;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-      font-size: 1.13em;
-      color: #FFD700;
-      text-align: left;
-    }
-    .achievements-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 0;
-    }
-    .achievement {
-      background: #23244a;
-      color: #FFD700;
-      border-radius: 7px;
-      padding: 5px 12px;
-      margin: 2px 5px 2px 0;
-      font-size: 0.98em;
-      transition: background 0.2s, color 0.2s;
-      opacity: 0.7;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .achievement.unlocked {
-      background: linear-gradient(90deg,#FFD700 60%,#FFB300 100%);
-      color: #23244a;
-      opacity: 1;
-      font-weight: 700;
-      box-shadow: 0 0 8px #FFD70066;
-    }
-    .achievement .emoji {
-      font-size: 1.18em;
-      margin-right: 2px;
-    }
     @media (max-width: 600px) {
       .container { padding: 10px; }
       .click-btn { padding: 18px 36px; font-size: 1.2rem; }
       .stats { flex-direction: column; gap: 5px; }
       .stock-row { flex-direction: column; gap: 2px; }
       .stock-col { text-align: left; }
-      .achievements-list { flex-direction: column; }
+      .skin-shop-list { flex-direction: column; }
     }
   </style>
 </head>
@@ -394,26 +399,18 @@
       <span id="musicStatus" style="font-size:0.92em;"></span>
     </div>
     <audio id="bgMusic" src="https://cdn.pixabay.com/audio/2023/02/10/audio_12b133e1b3.mp3" loop></audio>
-    <div class="skins-section">
-      <label for="skinSelect" style="font-weight:600; color:#FFD700;">Button Skin:</label>
-      <select id="skinSelect" class="skin-select">
-        <option value="default">Default</option>
-        <option value="gold">Gold</option>
-        <option value="carbon">Carbon</option>
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="cyber">Cyber</option>
-        <option value="pink">Pink</option>
-        <option value="mystic">Mystic</option>
-      </select>
-    </div>
     <!-- Tabs -->
     <div class="tabbar">
       <button class="tabbtn active" data-tab="gameTab" id="gameTabBtn">Game</button>
       <button class="tabbtn" data-tab="achievementsTab" id="achievementsTabBtn">Achievements</button>
+      <button class="tabbtn" data-tab="skinShopTab" id="skinShopTabBtn">Button Skin Shop</button>
     </div>
     <!-- Tab: Game -->
     <div class="tabcontent active" id="gameTab">
+      <div class="skins-section">
+        <label for="skinSelect" style="font-weight:600; color:#FFD700;">Button Skin:</label>
+        <select id="skinSelect" class="skin-select"></select>
+      </div>
       <div class="stats">
         <span>Level: <span id="level">1</span></span>
         <span>Clicks: <span id="totalClicks">0</span></span>
@@ -447,6 +444,13 @@
         <ul class="achievements-list" id="achievementsList"></ul>
       </div>
     </div>
+    <!-- Tab: Skin Shop -->
+    <div class="tabcontent" id="skinShopTab">
+      <div class="skin-shop-section">
+        <h4 style="color:#FFD700; margin-bottom:8px;">Button Skin Shop <span style="font-size:0.9em;color:#FFD700;">(10000 cash each)</span></h4>
+        <ul class="skin-shop-list" id="skinShopList"></ul>
+      </div>
+    </div>
   </div>
   <script>
     // Level system
@@ -463,17 +467,20 @@
     let autoclickerInterval = null;
 
     // Skins
-    const skinMap = {
-      default: "skin-default",
-      gold: "skin-gold",
-      carbon: "skin-carbon",
-      red: "skin-red",
-      green: "skin-green",
-      cyber: "skin-cyber",
-      pink: "skin-pink",
-      mystic: "skin-mystic"
-    };
+    const skinDefs = [
+      { value: "default", name: "Default", className: "skin-default" },
+      { value: "gold", name: "Gold", className: "skin-gold" },
+      { value: "carbon", name: "Carbon", className: "skin-carbon" },
+      { value: "red", name: "Red", className: "skin-red" },
+      { value: "green", name: "Green", className: "skin-green" },
+      { value: "cyber", name: "Cyber", className: "skin-cyber" },
+      { value: "pink", name: "Pink", className: "skin-pink" },
+      { value: "mystic", name: "Mystic", className: "skin-mystic" }
+    ];
+    const skinMap = {};
+    skinDefs.forEach(s => { skinMap[s.value] = s.className; });
     let buttonSkin = localStorage.getItem('titaniumClickerBtnSkin') || "default";
+    let ownedSkins = JSON.parse(localStorage.getItem('titaniumClickerOwnedSkins') || '["default"]');
 
     // Achievements
     const achievementList = [
@@ -521,6 +528,7 @@
     const cpcEl = document.getElementById('cpc');
     const clickBtn = document.getElementById('clickBtn');
     const skinSelect = document.getElementById('skinSelect');
+    const skinShopList = document.getElementById('skinShopList');
     const upgradeList = document.getElementById('upgradeList');
     const autoclickerInfo = document.getElementById('autoclickerInfo');
     const levelEl = document.getElementById('level');
@@ -547,6 +555,7 @@
         tabContents.forEach(tc => tc.classList.remove('active'));
         btn.classList.add('active');
         document.getElementById(btn.dataset.tab).classList.add('active');
+        if (btn.dataset.tab === "skinShopTab") renderSkinShop();
       });
     });
 
@@ -561,6 +570,7 @@
       renderStocks();
       renderAchievements();
       updateSkin();
+      renderSkinSelect();
     }
 
     function renderLevelBar() {
@@ -797,12 +807,109 @@
       clickBtn.className = "click-btn " + (skinMap[buttonSkin] || "skin-default");
       skinSelect.value = buttonSkin;
     }
+
+    function renderSkinSelect() {
+      skinSelect.innerHTML = "";
+      skinDefs.forEach(skin => {
+        if (ownedSkins.includes(skin.value)) {
+          let opt = document.createElement("option");
+          opt.value = skin.value;
+          opt.textContent = skin.name;
+          skinSelect.appendChild(opt);
+        }
+      });
+      skinSelect.value = buttonSkin;
+    }
     skinSelect.addEventListener("change", function() {
       buttonSkin = skinSelect.value;
       updateSkin();
       localStorage.setItem('titaniumClickerBtnSkin', buttonSkin);
       saveGame(false);
     });
+
+    // --- Skin Shop ---
+    function renderSkinShop() {
+      skinShopList.innerHTML = "";
+      skinDefs.forEach(skin => {
+        if (skin.value === "default") return; // Default always owned
+        const owned = ownedSkins.includes(skin.value);
+        const li = document.createElement('li');
+        li.className = 'skin-shop-row';
+        const label = document.createElement('span');
+        label.className = 'skin-shop-label';
+        label.textContent = skin.name;
+        // Add preview
+        const preview = document.createElement('span');
+        preview.className = 'skin-preview ' + skin.className;
+        preview.textContent = "Click!";
+        label.appendChild(preview);
+        li.appendChild(label);
+
+        if (!owned) {
+          // Buy button
+          const buyBtn = document.createElement('button');
+          buyBtn.className = 'skin-buy-btn';
+          buyBtn.textContent = `Buy for $10000`;
+          buyBtn.disabled = cash < 10000;
+          buyBtn.onclick = () => {
+            if (cash >= 10000) {
+              cash -= 10000;
+              ownedSkins.push(skin.value);
+              showSkinToast(`You bought the ${skin.name} skin!`);
+              updateSkin();
+              renderSkinShop();
+              renderSkinSelect();
+              updateUI();
+              saveGame();
+            }
+          };
+          li.appendChild(buyBtn);
+        } else {
+          // Use button & owned label
+          const useBtn = document.createElement('button');
+          useBtn.className = 'skin-use-btn';
+          useBtn.textContent = buttonSkin === skin.value ? "Using" : "Use";
+          useBtn.disabled = buttonSkin === skin.value;
+          useBtn.onclick = () => {
+            buttonSkin = skin.value;
+            updateSkin();
+            renderSkinShop();
+            renderSkinSelect();
+            saveGame();
+          };
+          li.appendChild(useBtn);
+          const ownedLabel = document.createElement('span');
+          ownedLabel.className = 'skin-owned-label';
+          ownedLabel.textContent = 'Owned';
+          li.appendChild(ownedLabel);
+        }
+        skinShopList.appendChild(li);
+      });
+    }
+
+    function showSkinToast(msg) {
+      const toast = document.createElement('div');
+      toast.textContent = msg;
+      toast.style.position = 'fixed';
+      toast.style.left = '50%';
+      toast.style.top = '56px';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = '#FFD700';
+      toast.style.color = '#23244A';
+      toast.style.fontWeight = '700';
+      toast.style.fontSize = '1.13em';
+      toast.style.padding = '10px 30px';
+      toast.style.borderRadius = '10px';
+      toast.style.zIndex = 9999;
+      toast.style.boxShadow = '0 4px 22px #FFD70088';
+      toast.style.opacity = '0.98';
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = 'opacity 1s';
+        toast.style.opacity = '0';
+        setTimeout(() => document.body.removeChild(toast), 1000);
+      }, 2200);
+    }
 
     // --- Save/Load/Reset ---
     function getSaveData() {
@@ -816,12 +923,15 @@
         upgrades: upgrades.map(u => ({...u})),
         stocks: stocks.map(s => ({...s})),
         buttonSkin,
-        achievements
+        achievements,
+        ownedSkins
       };
     }
     function saveGame(showStatus=true) {
       try {
         localStorage.setItem('titaniumClickerSave', JSON.stringify(getSaveData()));
+        localStorage.setItem('titaniumClickerBtnSkin', buttonSkin);
+        localStorage.setItem('titaniumClickerOwnedSkins', JSON.stringify(ownedSkins));
         if (showStatus) showSaveStatus('Game saved!');
       } catch(e) {
         showSaveStatus('Save failed!', true);
@@ -849,6 +959,9 @@
             buttonSkin = data.buttonSkin;
           }
           achievements = data.achievements || {};
+          ownedSkins = Array.isArray(data.ownedSkins) ? data.ownedSkins.slice() : ["default"];
+          // Always add default skin if missing
+          if (!ownedSkins.includes("default")) ownedSkins.unshift("default");
           startAutoClicker();
           updateUI();
           if (showStatus) showSaveStatus('Game loaded!');
@@ -882,7 +995,9 @@
       });
       stocks = initialStocks.map(s => ({...s}));
       buttonSkin = "default";
+      ownedSkins = ["default"];
       localStorage.setItem('titaniumClickerBtnSkin', buttonSkin);
+      localStorage.setItem('titaniumClickerOwnedSkins', JSON.stringify(ownedSkins));
       achievements = {};
       if (autoclickerInterval) clearInterval(autoclickerInterval);
       updateUI();
@@ -939,6 +1054,8 @@
       updateMusicBtn();
       updateSkin();
       checkAchievements();
+      renderSkinShop();
+      renderSkinSelect();
     });
 
     // Initial render
