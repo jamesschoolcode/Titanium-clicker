@@ -27,6 +27,43 @@
       letter-spacing: 1px;
       margin-bottom: 8px;
     }
+    .tabbar {
+      display: flex;
+      justify-content: space-around;
+      align-items: stretch;
+      margin: 18px 0 16px 0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #181a39;
+      box-shadow: 0 2px 8px #23244a44;
+    }
+    .tabbtn {
+      flex: 1;
+      border: none;
+      background: none;
+      color: #FFD700;
+      padding: 13px 0;
+      font-size: 1.12em;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      transition: background 0.15s, color 0.15s;
+      border-right: 1px solid #23244a;
+    }
+    .tabbtn:last-child { border-right: none; }
+    .tabbtn.active, .tabbtn:hover {
+      background: #FFD700;
+      color: #23244A;
+    }
+    .tabcontent {
+      display: none;
+      animation: fadeIn .4s;
+    }
+    .tabcontent.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to   { opacity: 1; transform: none;}
+    }
     .stats {
       display: flex;
       justify-content: space-around;
@@ -290,12 +327,62 @@
     .skin-select:focus {
       outline: 2px solid #FFD700;
     }
+    /* Achievements */
+    .achievements-section {
+      background: #1a1934;
+      border-radius: 12px;
+      margin-top: 26px;
+      margin-bottom: 14px;
+      padding: 17px 10px 12px 14px;
+      box-shadow: 0 2px 8px #23244a77;
+    }
+    .achievements-section h4 {
+      margin: 0 0 9px 0;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+      font-size: 1.13em;
+      color: #FFD700;
+      text-align: left;
+    }
+    .achievements-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 0;
+    }
+    .achievement {
+      background: #23244a;
+      color: #FFD700;
+      border-radius: 7px;
+      padding: 5px 12px;
+      margin: 2px 5px 2px 0;
+      font-size: 0.98em;
+      transition: background 0.2s, color 0.2s;
+      opacity: 0.7;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .achievement.unlocked {
+      background: linear-gradient(90deg,#FFD700 60%,#FFB300 100%);
+      color: #23244a;
+      opacity: 1;
+      font-weight: 700;
+      box-shadow: 0 0 8px #FFD70066;
+    }
+    .achievement .emoji {
+      font-size: 1.18em;
+      margin-right: 2px;
+    }
     @media (max-width: 600px) {
       .container { padding: 10px; }
       .click-btn { padding: 18px 36px; font-size: 1.2rem; }
       .stats { flex-direction: column; gap: 5px; }
       .stock-row { flex-direction: column; gap: 2px; }
       .stock-col { text-align: left; }
+      .achievements-list { flex-direction: column; }
     }
   </style>
 </head>
@@ -320,44 +407,59 @@
         <option value="mystic">Mystic</option>
       </select>
     </div>
-    <div class="stats">
-      <span>Level: <span id="level">1</span></span>
-      <span>Clicks: <span id="totalClicks">0</span></span>
+    <!-- Tabs -->
+    <div class="tabbar">
+      <button class="tabbtn active" data-tab="gameTab" id="gameTabBtn">Game</button>
+      <button class="tabbtn" data-tab="achievementsTab" id="achievementsTabBtn">Achievements</button>
     </div>
-    <div class="level-bar-container">
-      <div class="level-bar" id="levelBar" style="width:0%"></div>
+    <!-- Tab: Game -->
+    <div class="tabcontent active" id="gameTab">
+      <div class="stats">
+        <span>Level: <span id="level">1</span></span>
+        <span>Clicks: <span id="totalClicks">0</span></span>
+      </div>
+      <div class="level-bar-container">
+        <div class="level-bar" id="levelBar" style="width:0%"></div>
+      </div>
+      <div class="cash">Cash: <span id="cash">$0</span></div>
+      <button class="click-btn skin-default" id="clickBtn">Click Titanium (+$<span id="cpc">1</span>)</button>
+      <audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa7b3b.mp3"></audio>
+      <div class="autoclicker-info" id="autoclickerInfo" style="display:none;"></div>
+      <div class="upgrades">
+        <h4 style="margin-bottom:10px;letter-spacing:0.5px;">Upgrades</h4>
+        <ul class="upgrade-list" id="upgradeList"></ul>
+      </div>
+      <div class="stocks-section">
+        <h4>Fake Stocks Market</h4>
+        <ul class="stock-list" id="stockList"></ul>
+      </div>
+      <div class="save-section">
+        <button class="save-btn" id="saveBtn">Save</button>
+        <button class="load-btn" id="loadBtn">Load</button>
+        <button class="reset-btn" id="resetBtn">Reset</button>
+        <div id="saveStatus" style="margin-top:6px;font-size:0.95em;opacity:0.8;"></div>
+      </div>
     </div>
-    <div class="cash">Cash: <span id="cash">$0</span></div>
-    <button class="click-btn skin-default" id="clickBtn">Click Titanium (+$<span id="cpc">1</span>)</button>
-    <audio id="clickSound" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124bfa7b3b.mp3"></audio>
-    <div class="autoclicker-info" id="autoclickerInfo" style="display:none;"></div>
-    <div class="upgrades">
-      <h4 style="margin-bottom:10px;letter-spacing:0.5px;">Upgrades</h4>
-      <ul class="upgrade-list" id="upgradeList"></ul>
-    </div>
-    <div class="stocks-section">
-      <h4>Fake Stocks Market</h4>
-      <ul class="stock-list" id="stockList"></ul>
-    </div>
-    <div class="save-section">
-      <button class="save-btn" id="saveBtn">Save</button>
-      <button class="load-btn" id="loadBtn">Load</button>
-      <button class="reset-btn" id="resetBtn">Reset</button>
-      <div id="saveStatus" style="margin-top:6px;font-size:0.95em;opacity:0.8;"></div>
+    <!-- Tab: Achievements -->
+    <div class="tabcontent" id="achievementsTab">
+      <div class="achievements-section">
+        <h4>Achievements</h4>
+        <ul class="achievements-list" id="achievementsList"></ul>
+      </div>
     </div>
   </div>
   <script>
     // Level system
     let totalClicks = 0;
     let level = 1;
-    const levelThresholds = [0, 10, 30, 100, 400, 1500, 5000, 15000, 50000, 200000, 1000000]; // thresholds for levels 1-11
+    const levelThresholds = [0, 10, 30, 100, 400, 1500, 5000, 15000, 50000, 200000, 1000000];
 
     // Game state
     let cash = 0;
     let cpc = 1;
     let autoclickerOwned = 0;
     let autoclickerCost = 10000;
-    let autoclickerCps = 1; // Each autoclicker gives 1 click per second
+    let autoclickerCps = 1;
     let autoclickerInterval = null;
 
     // Skins
@@ -372,6 +474,23 @@
       mystic: "skin-mystic"
     };
     let buttonSkin = localStorage.getItem('titaniumClickerBtnSkin') || "default";
+
+    // Achievements
+    const achievementList = [
+      { id: "first_click",      emoji: "👆",  name: "First Click",        desc: "Make your first click!",                    check: () => totalClicks >= 1 },
+      { id: "ten_clicks",       emoji: "✋",  name: "Click Novice",       desc: "Click 10 times",                            check: () => totalClicks >= 10 },
+      { id: "hundred_clicks",   emoji: "💯",  name: "Click Master",       desc: "Click 100 times",                           check: () => totalClicks >= 100 },
+      { id: "thousand_clicks",  emoji: "🔱",  name: "Click Titan",        desc: "Click 1,000 times",                         check: () => totalClicks >= 1000 },
+      { id: "tenk_clicks",      emoji: "🌟",  name: "Click Legend",       desc: "Click 10,000 times",                        check: () => totalClicks >= 10000 },
+      { id: "first_auto",       emoji: "🤖",  name: "Automation!",        desc: "Buy your first Auto Clicker",               check: () => autoclickerOwned >= 1 },
+      { id: "upgrade5",         emoji: "⬆️",  name: "Upgrade Collector",  desc: "Own 5 upgrades (any type)",                 check: () => upgrades.reduce((a, u) => a + u.owned, 0) >= 5 },
+      { id: "rich",             emoji: "💰",  name: "Wealthy",            desc: "Reach $10,000 cash",                        check: () => cash >= 10000 },
+      { id: "stock_investor",   emoji: "📈",  name: "Investor",           desc: "Own any stock",                             check: () => stocks.some(s => s.owned > 0) },
+      { id: "stock_tycoon",     emoji: "💹",  name: "Stock Tycoon",       desc: "Own 50 total shares in stocks",             check: () => stocks.reduce((a, s) => a + s.owned, 0) >= 50 },
+      { id: "millionaire",      emoji: "🤑",  name: "Millionaire",        desc: "Reach $1,000,000 cash",                     check: () => cash >= 1000000 },
+      { id: "level10",          emoji: "🏆",  name: "Level 10",           desc: "Reach Level 10",                            check: () => level >= 10 }
+    ];
+    let achievements = {};
 
     // Fake stocks system
     const initialStocks = [
@@ -416,7 +535,20 @@
     const bgMusic = document.getElementById('bgMusic');
     const musicToggle = document.getElementById('musicToggle');
     const musicStatus = document.getElementById('musicStatus');
+    const achievementsList = document.getElementById('achievementsList');
+    const tabBtns = document.querySelectorAll('.tabbtn');
+    const tabContents = document.querySelectorAll('.tabcontent');
     let musicPlaying = false;
+
+    // Tab switching
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(tc => tc.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
 
     function updateUI() {
       cashEl.textContent = `$${cash}`;
@@ -427,11 +559,11 @@
       renderUpgrades();
       renderAutoclicker();
       renderStocks();
+      renderAchievements();
       updateSkin();
     }
 
     function renderLevelBar() {
-      // Progress to next level
       const current = totalClicks - levelThresholds[level - 1];
       const needed = (levelThresholds[level] || (levelThresholds[level-1]+500000)) - levelThresholds[level - 1];
       const percent = Math.min(100, Math.round((current / needed) * 100));
@@ -442,19 +574,19 @@
       cash += cpc;
       totalClicks += 1;
       if(clickSound) {
-        // Reset if already playing for rapid clicks
         clickSound.currentTime = 0;
         clickSound.play();
       }
       checkLevelUp();
       updateUI();
-      saveGame(); // Auto-save on click
+      checkAchievements();
+      saveGame();
     });
 
     function checkLevelUp() {
       if (level < levelThresholds.length && totalClicks >= levelThresholds[level]) {
         level += 1;
-        checkLevelUp(); // Recursively check in case of multiple level-ups
+        checkLevelUp();
       }
     }
 
@@ -464,7 +596,6 @@
         const unlocked = level >= upg.unlockLevel;
         const li = document.createElement('li');
         li.className = 'upgrade' + (unlocked ? '' : ' locked');
-
         const infoDiv = document.createElement('div');
         infoDiv.className = 'upgrade-info';
         infoDiv.innerHTML = `<div class="upgrade-title">${upg.name}</div>
@@ -472,23 +603,19 @@
             +${upg.cpcIncrease} per click | Owned: ${upg.owned}
             ${!unlocked ? `<br><span style="color:#FFD700;">Unlocks at level ${upg.unlockLevel}</span>` : ''}
           </div>`;
-
         const btn = document.createElement('button');
         btn.className = 'upgrade-btn';
         btn.textContent = `Buy ($${upg.cost})`;
         btn.disabled = !unlocked || cash < upg.cost;
-        btn.onclick = () => buyUpgrade(idx);
-
+        btn.onclick = () => { buyUpgrade(idx); };
         li.appendChild(infoDiv);
         li.appendChild(btn);
         upgradeList.appendChild(li);
       });
-
       // Render Auto Clicker as a special upgrade at the end (unlocked at level 3)
       const autoUnlocked = level >= 3;
       const autoLi = document.createElement('li');
       autoLi.className = 'upgrade' + (autoUnlocked ? '' : ' locked');
-
       const autoInfo = document.createElement('div');
       autoInfo.className = 'upgrade-info';
       autoInfo.innerHTML = `<div class="upgrade-title">Auto Clicker</div>
@@ -496,13 +623,11 @@
           +${autoclickerCps} click/sec each | Owned: ${autoclickerOwned}
           ${!autoUnlocked ? `<br><span style="color:#FFD700;">Unlocks at level 3</span>` : ''}
         </div>`;
-
       const autoBtn = document.createElement('button');
       autoBtn.className = 'upgrade-btn';
       autoBtn.textContent = `Buy ($${autoclickerCost})`;
       autoBtn.disabled = !autoUnlocked || cash < autoclickerCost;
       autoBtn.onclick = buyAutoClicker;
-
       autoLi.appendChild(autoInfo);
       autoLi.appendChild(autoBtn);
       upgradeList.appendChild(autoLi);
@@ -516,6 +641,7 @@
         upg.owned += 1;
         upg.cost = Math.round(upg.cost * 1.4);
         updateUI();
+        checkAchievements();
         saveGame();
       }
     }
@@ -527,6 +653,7 @@
         autoclickerCost = Math.round(autoclickerCost * 1.7);
         startAutoClicker();
         updateUI();
+        checkAchievements();
         saveGame();
       }
     }
@@ -547,9 +674,57 @@
         autoclickerInterval = setInterval(() => {
           cash += autoclickerOwned * autoclickerCps;
           updateUI();
+          checkAchievements();
           saveGame();
         }, 1000);
       }
+    }
+
+    // --- Achievements logic ---
+    function checkAchievements() {
+      let unlockedNew = false;
+      achievementList.forEach(ach => {
+        if (!achievements[ach.id] && ach.check()) {
+          achievements[ach.id] = true;
+          unlockedNew = true;
+          showAchievementToast(ach);
+        }
+      });
+      if (unlockedNew) saveGame(false);
+      renderAchievements();
+    }
+    function renderAchievements() {
+      achievementsList.innerHTML = '';
+      achievementList.forEach(ach => {
+        const unlocked = achievements[ach.id];
+        const li = document.createElement('li');
+        li.className = 'achievement' + (unlocked ? ' unlocked' : '');
+        li.innerHTML = `<span class="emoji">${ach.emoji}</span> <b>${ach.name}</b> <span style="font-size:0.93em;opacity:0.8;">${ach.desc}</span>`;
+        achievementsList.appendChild(li);
+      });
+    }
+    function showAchievementToast(ach) {
+      const toast = document.createElement('div');
+      toast.textContent = `🏅 Achievement Unlocked: ${ach.name}`;
+      toast.style.position = 'fixed';
+      toast.style.left = '50%';
+      toast.style.top = '32px';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = '#FFD700';
+      toast.style.color = '#23244A';
+      toast.style.fontWeight = '700';
+      toast.style.fontSize = '1.13em';
+      toast.style.padding = '10px 30px';
+      toast.style.borderRadius = '10px';
+      toast.style.zIndex = 9999;
+      toast.style.boxShadow = '0 4px 22px #FFD70088';
+      toast.style.opacity = '0.98';
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = 'opacity 1s';
+        toast.style.opacity = '0';
+        setTimeout(() => document.body.removeChild(toast), 1000);
+      }, 2000);
     }
 
     // --- Fake stocks system ---
@@ -558,36 +733,26 @@
       stocks.forEach((stock, idx) => {
         const li = document.createElement('li');
         li.className = 'stock-row';
-
-        // Stock name and your shares
         const nameCol = document.createElement('div');
         nameCol.className = 'stock-col';
         nameCol.innerHTML = `<b>${stock.name}</b> <span class="your-stock">${stock.owned > 0 ? 'Your shares: ' + stock.owned : ''}</span>`;
-
-        // Price
         const priceCol = document.createElement('div');
         priceCol.className = 'stock-col';
         priceCol.innerHTML = `$${stock.price}`;
-
-        // Buy/Sell
         const actionCol = document.createElement('div');
         actionCol.className = 'stock-col';
-        // Buy
         const buyBtn = document.createElement('button');
         buyBtn.className = 'stock-btn';
         buyBtn.textContent = "Buy";
         buyBtn.disabled = cash < stock.price;
-        buyBtn.onclick = () => buyStock(idx);
+        buyBtn.onclick = () => { buyStock(idx); };
         actionCol.appendChild(buyBtn);
-
-        // Sell
         const sellBtn = document.createElement('button');
         sellBtn.className = 'stock-btn sell';
         sellBtn.textContent = "Sell";
         sellBtn.disabled = stock.owned < 1;
-        sellBtn.onclick = () => sellStock(idx);
+        sellBtn.onclick = () => { sellStock(idx); };
         actionCol.appendChild(sellBtn);
-
         li.appendChild(nameCol);
         li.appendChild(priceCol);
         li.appendChild(actionCol);
@@ -601,6 +766,7 @@
         cash -= Math.round(stock.price);
         stock.owned += 1;
         updateUI();
+        checkAchievements();
         saveGame();
       }
     }
@@ -611,14 +777,13 @@
         cash += Math.round(stock.price);
         stock.owned -= 1;
         updateUI();
+        checkAchievements();
         saveGame();
       }
     }
 
-    // Randomly update stock prices
     function updateStockPrices() {
       stocks.forEach(stock => {
-        // Simulate stock market random walk
         const change = (Math.random() * 2 - 1) * stock.volatility * stock.price;
         stock.price = Math.max(1, Math.round(stock.price + change));
       });
@@ -636,6 +801,7 @@
       buttonSkin = skinSelect.value;
       updateSkin();
       localStorage.setItem('titaniumClickerBtnSkin', buttonSkin);
+      saveGame(false);
     });
 
     // --- Save/Load/Reset ---
@@ -649,10 +815,10 @@
         level,
         upgrades: upgrades.map(u => ({...u})),
         stocks: stocks.map(s => ({...s})),
-        buttonSkin
+        buttonSkin,
+        achievements
       };
     }
-
     function saveGame(showStatus=true) {
       try {
         localStorage.setItem('titaniumClickerSave', JSON.stringify(getSaveData()));
@@ -661,7 +827,6 @@
         showSaveStatus('Save failed!', true);
       }
     }
-
     function loadGame(showStatus=true) {
       try {
         const data = JSON.parse(localStorage.getItem('titaniumClickerSave'));
@@ -683,6 +848,7 @@
           if (data.buttonSkin && skinMap[data.buttonSkin]) {
             buttonSkin = data.buttonSkin;
           }
+          achievements = data.achievements || {};
           startAutoClicker();
           updateUI();
           if (showStatus) showSaveStatus('Game loaded!');
@@ -693,7 +859,6 @@
         if (showStatus) showSaveStatus('Failed to load save!', true);
       }
     }
-
     function resetGame() {
       if (!confirm("Are you sure you want to reset your game? This cannot be undone.")) return;
       cash = 0;
@@ -718,21 +883,19 @@
       stocks = initialStocks.map(s => ({...s}));
       buttonSkin = "default";
       localStorage.setItem('titaniumClickerBtnSkin', buttonSkin);
+      achievements = {};
       if (autoclickerInterval) clearInterval(autoclickerInterval);
       updateUI();
       saveGame(false);
       showSaveStatus('Game reset!');
     }
-
     function showSaveStatus(msg, error=false) {
       saveStatus.textContent = msg;
       saveStatus.style.color = error ? '#cf3f3f' : '#FFD700';
       setTimeout(() => { saveStatus.textContent = ""; }, 2200);
     }
-
-    // Save/Load/Reset events
     saveBtn.addEventListener('click', () => saveGame());
-    loadBtn.addEventListener('click', () => loadGame());
+    loadBtn.addEventListener('click', () => { loadGame(); checkAchievements(); });
     resetBtn.addEventListener('click', () => resetGame());
 
     // --- Background Music Controls ---
@@ -775,6 +938,7 @@
       startAutoClicker();
       updateMusicBtn();
       updateSkin();
+      checkAchievements();
     });
 
     // Initial render
